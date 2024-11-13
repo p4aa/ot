@@ -1,0 +1,47 @@
+import pandas as pd
+import numpy as np
+
+# Sample dataset
+data = {
+    'Date': ['2023-01-01', '2023-01-02', None, '2023-01-04', '2023-01-02'],
+    'Stock': ['AAPL', 'AAPL', 'GOOGL', 'AAPL', 'GOOGL'],
+    'Price': [150, np.nan, 2800, 145, 2800],
+    'Volume': [1000, 2000, None, 1500, 2000]
+}
+df = pd.DataFrame(data)
+print("Original Data:\n", df)
+print("\nMissing Values:\n", df.isnull().sum())
+# Fill missing numerical values with mean
+df['Price'].fillna(df['Price'].mean(), inplace=True)
+df['Volume'].fillna(df['Volume'].mean(), inplace=True)
+
+# Drop rows with missing 'Date' values since 'Date' is critical for analysis
+df.dropna(subset=['Date'], inplace=True)
+print("\nData After Handling Missing Values:\n", df)
+# Remove duplicate rows
+df.drop_duplicates(inplace=True)
+print("\nData After Removing Duplicates:\n", df)
+# Convert 'Date' column to datetime type
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Convert 'Stock' to category type
+df['Stock'] = df['Stock'].astype('category')
+
+print("\nData Types After Conversion:\n", df.dtypes)
+# Identify outliers in the 'Price' column
+Q1 = df['Price'].quantile(0.25)
+Q3 = df['Price'].quantile(0.75)
+IQR = Q3 - Q1
+
+# Define the range for normal data
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+# Filter out the outliers
+df = df[(df['Price'] >= lower_bound) & (df['Price'] <= upper_bound)]
+print("\nData After Removing Outliers:\n", df)
+# Standardize 'Stock' column to uppercase (already uppercase here, but useful for demonstration)
+df['Stock'] = df['Stock'].str.upper()
+print("\nData After Standardizing Text Data:\n", df)
+df.reset_index(drop=True, inplace=True)
+print("\nFinal Cleaned Data:\n", df)
