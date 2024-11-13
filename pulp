@@ -1,0 +1,12 @@
+import pulp
+lp_problem=pulp.LpProblem("Maximize_Profit",pulp.LpMaximize)
+x=pulp.LpVariable('x',lowBound=0)
+y=pulp.LpVariable('y',lowBound=0)
+lp_problem+=3*x+5*y,"Maximize profit"
+lp_problem+=x<=4
+lp_problem +=2*y<=12
+lp_problem +=3*x+2*y<=18
+lp_problem.solve()
+print(f"Status:{pulp.LpStatus[lp_problem.status]}")
+print(f"Optimal value:{pulp.value(lp_problem.objective)}")
+print(f"DEcision variables:x={x.varValue},y={y.varValue}")
