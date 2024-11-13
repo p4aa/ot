@@ -1,0 +1,26 @@
+pip install matplotlib seaborn plotly
+import numpy as np
+import pandas as pd
+
+# Generate sample data
+np.random.seed(0)
+x = np.random.randn(100)
+y = 2 * x + np.random.randn(100) * 0.5
+z = np.random.randn(100)
+data = pd.DataFrame({'X': x, 'Y': y, 'Z': z})
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(8, 6))
+plt.scatter(data['X'], data['Y'], c='blue', alpha=0.5)
+plt.title("2D Scatter Plot of X vs Y")
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.grid(True)
+plt.show()
+
+import plotly.express as px
+
+fig = px.scatter_3d(data, x='X', y='Y', z='Z', color='Z', title="Interactive 3D Scatter Plot")
+fig.show()
